@@ -1,0 +1,74 @@
+<yeijara-sidenav></yeijara-sidenav>
+
+<div class="container">
+    <div class="row">
+        <div class="col-xs-12 col-md-6">
+            <div class="row">
+                <div class="col-xs-12 margin-bottom-10">
+                    <button type="button" class="btn btn-dark" [routerLink]="['/nequi/home']">Atras</button>
+                </div>
+            </div>
+            <div class="row" *ngIf="users && users.length > 0">
+                <div class="col-xs-12 col-md-6 margin-bottom-10" *ngFor="let u of users">
+                    <div [ngClass]="{'container-user-active' : u._id === user._id}" class="container-user pointer-cursor" (click)="chooseUser(u)">
+                        {{u.name}}
+                        <div class="right-align">
+                            <i style="font-size: 13px">{{u.status}}</i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-xs-12 col-md-6">
+            <form #userForm="ngForm" (ngSubmit)="saveUser()">
+                <div class="col-xs-12 margin-bottom-10">
+                    <label>Nombre:</label>
+                    <input type="text" class="form-control" #nombre="ngModel" name="nombre" [(ngModel)]="user.name" required />
+                </div>
+                <div class="col-xs-12 margin-bottom-10">
+                    <label>Cuota pactada:</label>
+                    <input type="number" class="form-control" #cuota="ngModel" name="cuota" [(ngModel)]="user.agreedFee" required />
+                </div>
+                <div class="col-xs-12 margin-bottom-10">
+                    <label>Estado:</label>
+                    <select name="selectStatus" id="selectStatus" class="form-control" [(ngModel)]="user.status">
+                        <option style="display: none" disabled selected value=''>Seleccione el estado</option>
+                        <option value="ACTIVE">Activo</option>
+                        <option value="INACTIVE">Inactivo</option>
+                    </select>
+                </div>
+                <div class="col-xs-12 margin-bottom-10">
+                    <label>Fecha inicio:</label>
+                    <input *ngIf="user._id == null || user._id.length <= 0" type="date" class="form-control" #fechaInicio="ngModel" name="fechaInicio"
+                        [(ngModel)]="user.start" required />
+                    <input *ngIf="user._id != null && user._id.length > 0" type="text" class="form-control" #fechaFin="ngModel" name="fechaInicio"
+                        [(ngModel)]="user.start" [disabled]="user._id != null && user._id.length > 0" required />
+                </div>
+                <div class="col-xs-12 margin-bottom-10">
+                    <label>Fecha fin:</label>
+                    <input *ngIf="user._id == null || user._id.length <= 0" type="date" class="form-control" #fechaFin="ngModel" name="fechaFin"
+                        [(ngModel)]="user.end" required />
+                    <input *ngIf="user._id != null && user._id.length > 0" type="text" class="form-control" #fechaFin="ngModel" name="fechaFin"
+                        [(ngModel)]="user.end" [disabled]="user._id != null && user._id.length > 0" required />
+                </div>
+                <div class="col-xs-12 margin-bottom-10">
+                    <label>Cuenta:</label>
+                    <input type="text" class="form-control" #cuenta="ngModel" name="cuenta" [(ngModel)]="user.account" />
+                </div>
+                <div class="col-xs-12 margin-bottom-10">
+                    <label>Nombre bolsillo:</label>
+                    <input type="text" class="form-control" #bolsillo="ngModel" name="bolsillo" [(ngModel)]="user.pocketName" required />
+                </div>
+                <div class="col-xs-12 margin-bottom-10">
+                    <label>Contraseña:</label>
+                    <input type="password" class="form-control" #clave="ngModel" name="clave" [(ngModel)]="user.password" required />
+                </div>
+
+                <div class="col-xs-12 margin-bottom-10 right-align">
+                    <button type="button" class="btn btn-light" (click)="cleanUser()">Limpiar</button>
+                    <button type="submit" class="btn btn-primary">Guardar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,29 @@
+.margin-bottom-10 {
+    margin-bottom: 10px;
+}
+
+.right-align {
+    text-align: right;
+}
+
+.center-align {
+    text-align: center;
+}
+
+.container-user {
+    border: 1px solid #343a40;
+    border-radius: 5px;
+    padding: 15px;
+}
+
+.container-user:hover, .container-user-active {
+    border: 1px solid #343a40;
+    border-radius: 5px;
+    padding: 15px;
+    background-color: #343a40;
+    color: #FFFFFF;
+}
+
+.pointer-cursor {
+    cursor: pointer;
+}

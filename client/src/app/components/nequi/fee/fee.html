@@ -1,0 +1,111 @@
+<yeijara-sidenav></yeijara-sidenav>
+
+<div class="container">
+    <div id="modalFeeOptions" class="modal" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Multa</h5>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-xs-12 offset-md-2 col-md-8">
+                            <form #penaltyForm="ngForm">
+                                <div class="col-xs-12 margin-bottom-10">
+                                    <label>Fecha:</label>
+                                    <input type="date" class="form-control" #fecha="ngModel" name="fecha" [(ngModel)]="penalty.date" required />
+                                </div>
+                                <div class="col-xs-12 margin-bottom-10">
+                                    <label>Valor multa:</label>
+                                    <input type="number" class="form-control" #valor="ngModel" name="valor" [(ngModel)]="penalty.value" />
+                                </div>
+                                <div class="col-xs-12 margin-bottom-10">
+                                    <label>Concepto:</label>
+                                    <select name="selectStatus" id="selectStatus" class="form-control" [(ngModel)]="penalty.concept">
+                                        <option style="display: none" disabled selected value=''>Seleccione el concepto</option>
+                                        <option value="Mora">Mora</option>
+                                        <option value="Prestamo">Prestamo</option>
+                                    </select>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-danger" (click)="deleteFee()">Eliminar cuota</button>
+                    <button type="button" class="btn btn-primary" (click)="savePenalty()">Guardar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-xs-12 col-md-6">
+            <div class="row">
+                <div class="col-xs-12 margin-bottom-10">
+                    <button type="button" class="btn btn-dark" [routerLink]="['/nequi/home']">Atras</button>
+                </div>
+            </div>
+            <div class="row" *ngIf="users && users.length > 0">
+                <div class="col-xs-12 col-md-6 margin-bottom-10" *ngFor="let u of users">
+                    <div [ngClass]="{'container-user-active' : u._id === user._id}" class="container-user pointer-cursor" (click)="chooseUser(u)">
+                        {{u.name}}
+                        <div class="right-align">
+                            <i style="font-size: 13px">{{u.status}}</i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-xs-12 col-md-6" *ngIf="user && user._id != null && user._id.length > 0">
+            <div *ngIf="pass == 0">
+                <div class="row right-align">
+                    <div class="col-xs-12 margin-bottom-10" style="width: 100%">
+                        <button type="button" class="btn btn-dark" (click)="getNextPass()">Nuevo</button>
+                    </div>
+                </div>
+                <table class="table table-bordered table-striped">
+                    <tr>
+                        <th>#</th>
+                        <th>Fecha</th>
+                        <th>Valor</th>
+                        <th>Estado</th>
+                    </tr>
+                    <tr *ngFor="let fee of dues; let i = index" class="pointer-cursor" (click)="chooseFee(fee)">
+                        <td>{{i + 1}}</td>
+                        <td>{{fee.date | date:'longDate'}}</td>
+                        <td>{{fee.value | number}}</td>
+                        <td>{{fee.status}}</td>
+                    </tr>
+                    <tr>
+                        <td colspan="4" class="totalSaved">Total: {{totalSaved | number}}</td>
+                    </tr>
+                </table>
+            </div>
+            <form #feeForm="ngForm" (ngSubmit)="saveFee()" *ngIf="pass == 1">
+                <div class="col-xs-12 margin-bottom-10">
+                    <label>Fecha:</label>
+                    <input type="date" class="form-control" #fecha="ngModel" name="fecha" [(ngModel)]="fee.date" required />
+                </div>
+                <div class="col-xs-12 margin-bottom-10">
+                    <label>Valor cuota:</label>
+                    <input type="number" class="form-control" #valor="ngModel" name="valor" [(ngModel)]="fee.value" />
+                </div>
+                <div class="col-xs-12 margin-bottom-10">
+                    <label>Estado:</label>
+                    <select name="selectStatus" id="selectStatus" class="form-control" [(ngModel)]="fee.status">
+                        <option style="display: none" disabled selected value=''>Seleccione el estado</option>
+                        <option value="ACTIVE">Activo</option>
+                        <option value="CANCEL">Cancelado</option>
+                    </select>
+                </div>
+
+                <div class="col-xs-12 margin-bottom-10 right-align">
+                    <button type="button" class="btn btn-light" (click)="cancelNewFee()">Cancelar</button>
+                    <button type="submit" class="btn btn-primary">Guardar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

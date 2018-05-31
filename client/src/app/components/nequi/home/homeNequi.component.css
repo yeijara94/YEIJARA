@@ -1,0 +1,16 @@
+.card-body:hover {
+    color: #FFFFFF;
+    background-color: #343a40;
+}
+
+.card-title {
+    text-align: center;
+}
+
+.pointer-cursor {
+    cursor: pointer;
+}
+
+.margin-bottom-10 {
+    margin-bottom: 10px;
+}

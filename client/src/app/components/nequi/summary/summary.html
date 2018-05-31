@@ -1,0 +1,41 @@
+<yeijara-sidenav></yeijara-sidenav>
+
+<div class="container">
+    <div class="row">
+        <div class="col-xs-12 margin-bottom-10">
+            <button type="button" class="btn btn-dark" [routerLink]="['/nequi/home']">Atras</button>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-xs-12 col-sm-4 col-md-3">
+            <div class="container-item margin-bottom-10">
+                Ahorrado
+                <hr/> {{totalDues | number}}
+            </div>
+        </div>
+        <div class="col-xs-12 col-sm-4 col-md-3">
+            <div class="container-item margin-bottom-10">
+                Prestado
+                <hr/> {{totalLoans | number}}
+            </div>
+        </div>
+        <div class="col-xs-12 col-sm-4 col-md-3">
+            <div class="container-item margin-bottom-10">
+                Fiducuenta
+                <hr/> {{totalDues | number}}
+            </div>
+        </div>
+        <div class="col-xs-12 col-sm-4 col-md-3">
+            <div class="container-item margin-bottom-10">
+                Intereses
+                <hr/> {{totalDues | number}}
+            </div>
+        </div>
+        <div class="col-xs-12 col-sm-12 col-md-12">
+            <div class="container-item margin-bottom-10">
+                Total
+                <hr/> {{(totalDues - totalLoans) | number}}
+            </div>
+        </div>
+    </div>
+</div>

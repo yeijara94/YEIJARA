@@ -1,0 +1,175 @@
+<yeijara-sidenav></yeijara-sidenav>
+
+<div class="container">
+    <div id="modalPayment" class="modal" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Pagos</h5>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-xs-12 col-md-5">
+                            <div class="row" *ngIf="loanPaymentsPaginate && loanPaymentsPaginate.length > 0">
+                                <div class="col-xs-12 margin-bottom-10" style="width: 100%" *ngFor="let payment of loanPaymentsPaginate">
+                                    <div class="center-align" style="border: 1px solid #343a40; border-radius: 6px; padding: 15px; margin: 0 15px">
+                                        {{payment.date | date:'shortDate'}}
+                                        <br/> {{payment.value | number}}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row" *ngIf="pages && pages.length > 1">
+                                <div class="col-xs-12" style="width: 100%; margin: 0 22px">
+                                    <nav aria-label="Page navigation example">
+                                        <ul class="pagination">
+                                            <li class="page-item" (click)="getPage(page - 1)">
+                                                <a class="page-link" aria-label="Previous">
+                                                    <span aria-hidden="false">&laquo;</span>
+                                                </a>
+                                            </li>
+                                            <li class="page-item" *ngFor="let pag of pages" (click)="getPage(pag)" [ngClass]="{'active' : pag === page}">
+                                                <a href="javascript:void(0);" class="page-link">{{pag}}</a>
+                                            </li>
+                                            <li class="page-item" (click)="getPage(page + 1)">
+                                                <a class="page-link">
+                                                    <span aria-hidden="true">&raquo;</span>
+                                                </a>
+                                            </li>
+                                        </ul>
+                                    </nav>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xs-12 col-md-7">
+                            <form #paymentForm="ngForm">
+                                <div class="col-xs-12 margin-bottom-10 center-align" style="font-size: 20px; color: #007bff">
+                                    <b>Pendiente</b>: {{totalLoan | number}}
+                                </div>
+                                <div class="col-xs-12 margin-bottom-10">
+                                    <label>Fecha:</label>
+                                    <input type="date" class="form-control" name="fecha" #fecha="ngModel" [(ngModel)]="loanPayment.date" required [disabled]="loan.status === 'CLOSED'"
+                                    />
+                                </div>
+                                <div class="col-xs-12 margin-bottom-10">
+                                    <label>Valor pagado:</label>
+                                    <input type="number" class="form-control" name="valor" #valor="ngModel" [(ngModel)]="loanPayment.value" required [disabled]="loan.status === 'CLOSED'"
+                                    />
+                                </div>
+                                <div class="col-xs-12 margin-bottom-10" *ngIf="loan.status !== 'CLOSED'">
+                                    <span *ngIf="!loanPayment.interest" class="fa fa-square-o pointer-cursor" style="font-size: 25px" (click)="changeInterest()"></span>
+                                    <span *ngIf="loanPayment.interest" class="fa fa-check-square pointer-cursor" style="font-size: 24px" (click)="changeInterest()"></span>
+                                    <span (click)="changeInterest()">¿Aplicar a intereses?</span>
+                                </div>
+                                <div class="col-xs-12 margin-bottom-10" *ngIf="loan.status !== 'CLOSED'">
+                                    <span *ngIf="!loanPayment.applyLoan" class="fa fa-square-o pointer-cursor" style="font-size: 25px" (click)="changeApplyLoan()"></span>
+                                    <span *ngIf="loanPayment.applyLoan" class="fa fa-check-square pointer-cursor" style="font-size: 24px" (click)="changeApplyLoan()"></span>
+                                    <span (click)="changeApplyLoan()">¿No aplicar a la deuda?</span>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-primary" (click)="saveLoanPayment()" *ngIf="loan.status !== 'CLOSED'">Guardar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-xs-12 col-md-6">
+            <div class="row">
+                <div class="col-xs-12 margin-bottom-10">
+                    <button type="button" class="btn btn-dark" [routerLink]="['/nequi/home']">Atras</button>
+                </div>
+            </div>
+            <div class="row" *ngIf="users && users.length > 0">
+                <div class="col-xs-12 col-md-6 margin-bottom-10" *ngFor="let u of users">
+                    <div [ngClass]="{'container-user-active' : u._id === user._id}" class="container-user pointer-cursor" (click)="chooseUser(u)">
+                        {{u.name}}
+                        <div class="right-align">
+                            <i style="font-size: 13px">{{u.status}}</i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-xs-12 col-md-6" *ngIf="user && user._id != null && user._id.length > 0">
+            <div *ngIf="pass == 0">
+                <div class="row right-align">
+                    <div class="col-xs-12 margin-bottom-10" style="width: 100%">
+                        <button type="button" class="btn btn-dark" (click)="getNextPass()">Nuevo</button>
+                    </div>
+                </div>
+                <table class="table table-bordered table-striped">
+                    <tr>
+                        <th>#</th>
+                        <th>Fecha</th>
+                        <th>Valor prestado</th>
+                        <th>Valor pagar</th>
+                        <th>Estado</th>
+                    </tr>
+                    <tr *ngFor="let loan of loans; let i = index" class="pointer-cursor" (click)="chooseLoan(loan)">
+                        <td>{{i + 1}}</td>
+                        <td>{{loan.date | date:'shortDate'}}</td>
+                        <td>{{loan.value | number}}</td>
+                        <td>{{(loan.value + ((loan.value / 100) * loan.interestPercentage)) | number}}</td>
+                        <td>{{loan.status}}</td>
+                    </tr>
+                    <tr>
+                        <td colspan="5" class="totalSaved">Total: {{totalSaved | number}}</td>
+                    </tr>
+                </table>
+            </div>
+            <form #loanForm="ngForm" (ngSubmit)="saveLoan()" *ngIf="pass == 1">
+                <div class="col-xs-12 margin-bottom-10">
+                    <label>Fecha:</label>
+                    <input type="date" class="form-control" #fecha="ngModel" name="fecha" [(ngModel)]="loan.date" required />
+                </div>
+                <div class="col-xs-12 margin-bottom-10">
+                    <label>Fecha pactada:</label>
+                    <input type="date" class="form-control" #fechaPactada="ngModel" name="fechaPactada" [(ngModel)]="loan.agreedDate" required
+                    />
+                </div>
+                <div class="col-xs-12 margin-bottom-10">
+                    <label>Cuenta:</label>
+                    <div class="input-group mb-3" *ngIf="!writeAccount">
+                        <select name="selectAccount" id="selectAccount" class="form-control" [(ngModel)]="loan.account">
+                            <option style="display: none" disabled selected value=''>Seleccione la cuenta</option>
+                            <option *ngFor="let account of accounts" value="{{account}}">{{account}}</option>
+                        </select>
+                        <div class="input-group-append">
+                            <button type="button" class="btn btn-outline-secondary" (click)="changeAccountMode()">
+                                <span class="fa fa-edit"></span>
+                            </button>
+                        </div>
+                    </div>
+                    <input type="text" class="form-control" #valor="ngModel" name="account" [(ngModel)]="loan.account" required *ngIf="writeAccount"
+                    />
+                </div>
+                <div class="col-xs-12 margin-bottom-10">
+                    <label>Bolsillo:</label>
+                    <select name="selectPocket" id="selectPocket" class="form-control" [(ngModel)]="loan.pocket">
+                        <option style="display: none" disabled selected value=''>Seleccione el estado</option>
+                        <option *ngFor="let pocket of pockets" value="{{pocket}}">{{pocket}}</option>
+                    </select>
+                </div>
+                <div class="col-xs-12 margin-bottom-10">
+                    <label>% Interes:</label>
+                    <input type="number" class="form-control" #valor="ngModel" name="interestPercentage" [(ngModel)]="loan.interestPercentage"
+                        required />
+                </div>
+                <div class="col-xs-12 margin-bottom-10">
+                    <label>Valor prestamo:</label>
+                    <input type="number" class="form-control" #valor="ngModel" name="valor" [(ngModel)]="loan.value" required />
+                </div>
+
+                <div class="col-xs-12 margin-bottom-10 right-align">
+                    <button type="button" class="btn btn-light" (click)="cancelNewLoan()">Cancelar</button>
+                    <button type="submit" class="btn btn-primary">Guardar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

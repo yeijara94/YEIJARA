@@ -1,0 +1,13 @@
+<yeijara-sidenav></yeijara-sidenav>
+
+<div class="container">
+    <div class="row">
+        <div class="col-xs-12 col-sm-6 col-md-3 margin-bottom-10" *ngFor="let option of options">
+            <div class="card">
+                <div [routerLink]="[option.link]" class="card-body pointer-cursor">
+                    <h3 class="card-title">{{option.name}}</h3>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
